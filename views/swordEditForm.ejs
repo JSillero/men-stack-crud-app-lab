@@ -8,7 +8,7 @@
 </head>
 
 <body>
-  <form method="PUT" action="/swords/<%=swords._id%>?_method=PUT">
+  <form method="POST" action="/swords/<%=swords._id%>?_method=PUT">
      <label>Name:
       <input type="text" name="name" id="name"
       <% if (swords.name) {%>
