@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <form method="PUT" action="/swords/<%=swords._id%>?_method=PUT">
+     <label>Name:
+      <input type="text" name="name" id="name"
+      <% if (swords.name) {%>
+        value="<%=swords.name%>"
+      <%}%> > 
+    </label>
+    <label>Description:
+      <input type="text" name="description" id="description"
+      <% if (swords.description) {%>
+        value="<%=swords.description%>"
+      <%}%> >
+    </label>
+    <label>Image:
+      <input type="text" name="img" id="img"  
+      <% if (swords.img) {%>
+        value="<%=swords.img%>"
+      <%}%>>
+    </label>
+    <label>Dobule Edged:
+      <input type="checkbox" name="doubleEdged" id="doubleEdged"  
+      <% if (swords.doubleEdged) {%>
+        checked="checked"
+      <%}%>>
+    </label>
+    <input type="submit" value="submit">
+  </form>
+</body>
+
+</html>

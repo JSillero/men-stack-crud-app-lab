@@ -6,6 +6,21 @@
     <title>Document</title>
 </head>
 <body>
-    
+    <h1>Swords Index</h1>
+  <h2><a href="/swords/new">Create new sword</a></h2>
+    <% swords.forEach(element => { %>
+        <div>
+            <h3><%=element.name %></h3>
+            <p><%=element.description %></p>
+            <%if (element.doubleEdged){%>
+                <p>Has two edges</p>
+            <%} %>
+            
+            <p><a href="/swords/<%=element._id %>">Single view</a></p>
+            <p><a href="/swords/<%=element._id %>/edit">Edit</a></p>
+            <p><a href="/swords/<%=element._id%>?_method=DELETE">Delete</a></p>
+        </div>
+        
+    <% }); %>
 </body>
 </html> 

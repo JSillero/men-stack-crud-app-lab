@@ -1,11 +1,11 @@
 const mongoose = require('mongoose')
 
 const swordSchema = new mongoose.Schema({
-    id: { type: Number, unique: true, required: true },
     name: { type: String, required: true },
     description: { type: String, required: true },
     image: String,
+    doubleEdged: { type: Boolean, default: false }
 })
 
-const Sword = mongoose.model('Sword', swordSchema);
+const Sword = mongoose.model('Sword2', swordSchema);
 module.exports = Sword;
