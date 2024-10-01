@@ -1,26 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
 </head>
+
 <body>
-    <h1>Swords Index</h1>
+  <h1>Swords Index</h1>
   <h2><a href="/swords/new">Create new sword</a></h2>
-    <% swords.forEach(element => { %>
-        <div>
-            <h3><%=element.name %></h3>
-            <p><%=element.description %></p>
-            <%if (element.doubleEdged){%>
-                <p>Has two edges</p>
-            <%} %>
-            
-            <p><a href="/swords/<%=element._id %>">Single view</a></p>
-            <p><a href="/swords/<%=element._id %>/edit">Edit</a></p>
-            <p><a href="/swords/<%=element._id%>?_method=DELETE">Delete</a></p>
-        </div>
-        
-    <% }); %>
+  <% swords.forEach(element => { %>
+  <div>
+    <h3><%=element.name %></h3>
+    <p><%=element.description %></p>
+    <%if (element.doubleEdged){%>
+    <p>Has two edges</p>
+    <%} %>
+
+    <p><a href="/swords/<%=element._id %>">Single view</a></p>
+    <p><a href="/swords/<%=element._id %>/edit">Edit</a></p>
+    <p>
+    <form method="POST" action="/swords/<%=element._id%>?_method=DELETE">
+      <input type="submit" value="Delete">
+    </form>
+    </p>
+  </div>
+
+  <% }); %>
+
+  <% if (user) { %>
+  <h1>Welcome to the app, <%= user.username %>!</h1>
+  <p>
+    <!-- new sign out link -->
+    <a href="auth/sign-out">Sign out</a>
+  </p>
+  <% } else { %>
+  <h1>Welcome to the app, guest.</h1>
+  <p>
+    <a href="auth/sign-up">Sign up</a> or <a href="auth/sign-in">sign in</a>.
+  </p>
+  <% } %>
+
+
 </body>
-</html> 
+
+</html>

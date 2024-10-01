@@ -1,143 +1,42 @@
 const express = require('express')
 const morgan = require('morgan')
 const mongoose = require('mongoose')
+const MongoStore = require("connect-mongo");
 const methodOverride = require('method-override')
+
 require('dotenv/config')
 
 // ! -- Variables
 const app = express()
 const port = 3000
+const swordsController = require("./controllers/swords.js");
+const authController = require("./controllers/auth.js");
+const passUserToView = require("./middleware/pass-user-to-view.js");
 
-//model
-const Swords = require('./models/swords');
+const session = require('express-session');
 
 // ! -- Middleware
 app.use(express.urlencoded({ extendedurl: false }));
+app.use(methodOverride("_method"));
 app.use(morgan('dev'));
-app.use(methodOverride('_method'))
 
-// ! -- Index
-app.get("/swords", async (req, res) => {
-    try {
-        const swords = await Swords.find();
-        return res.status(200).render("index.ejs", {
-            swords: swords,
-        });
+app.use(
+    session({
+        secret: process.env.SESSION_SECRET,
+        resave: false,
+        saveUninitialized: true,
+        store: MongoStore.create({
+            mongoUrl: process.env.MONGODB_URI,
+        }),
+    })
+);
 
-    } catch (error) {
-        console.log(error);
-        return res.status(500).send('An error occurred')
-    }
-})
+//adds the user session to all views
+app.use(passUserToView);
 
-// ! -- CRUD
-/* Create */
-//
-app.get("/swords/new", async (req, res) => {
-    try {
-        return res.render("swordForm.ejs");
-    } catch (error) {
-        console.log(error);
-        return res.status(500).send('An error occurred')
-    }
-})
-
-app.post("/swords", async (req, res) => {
-    try {
-        console.dir(req.body)
-        req.body.doubleEdged = !!req.body.doubleEdged;
-        const sword = await Swords.create(req.body);
-        return res.status(201).redirect("/swords");
-    } catch (error) {
-        console.log(error);
-        return res.status(500).send('An error occurred')
-    }
-})
-//!--- UPDATE
-app.get("/swords/:swordID/edit", async (req, res) => {
-    try {
-        const foundDocument = await Swords.findById(req.params.swordID);
-
-        if (!foundDocument) return res.status(404).send('Sword not found')
-
-        return res.render("swordEditForm.ejs", {
-            swords: foundDocument
-        });
-
-    } catch (error) {
-        console.log(error);
-        return res.status(500).send('An error occurred')
-    }
-})
-
-
-app.put("/swords/:swordID", async (req, res) => {
-    try {
-        req.body.doubleEdged = !!req.body.doubleEdged;
-        const foundDocument = await Swords.findByIdAndUpdate(req.params.swordID, req.body);
-        console.log("sword updateD");
-        if (!foundDocument) return res.status(404).send('Sword not found')
-
-        return res.redirect("/swords");
-
-    } catch (error) {
-        console.log(error);
-        return res.status(500).send('An error occurred')
-    }
-})
-
-// !-- DELETE
-app.delete("/swords/:swordID", async (req, res) => {
-    try {
-        const foundDocument = await Swords.findByIdAndDelete(req.params.swordID);
-
-        if (!foundDocument) return res.status(404).send('Sword not found')
-
-        return res.redirect("/swords");
-
-    } catch (error) {
-        console.log(error);
-        return res.status(500).send('An error occurred')
-    }
-})
-
-
-
-// ! --- READ
-// ! -- Index
-app.get("/swords", async (req, res) => {
-    try {
-        const foundDocument = await Swords.find();
-        console.dir(foundDocument);
-        if (!foundDocument) return res.status(404).send('Sword not found')
-
-        return res.render("index.ejs", {
-            swords: foundDocument
-        })
-
-    } catch (error) {
-        console.log(error);
-        return res.status(500).send('An error occurred')
-    }
-})
-// ! -- single view
-app.get("/swords/:swordID", async (req, res) => {
-    try {
-        const foundDocument = await Swords.findById(req.params.swordID);
-
-        if (!foundDocument) return res.status(404).send('Sword not found')
-        console.log("Found doc:")
-        console.dir(foundDocument);
-        return res.render("singleview.ejs", {
-            swords: foundDocument
-        })
-
-    } catch (error) {
-        console.log(error);
-        return res.status(500).send('An error occurred')
-    }
-})
-
+//Contorllers
+app.use("/swords", swordsController);
+app.use("/auth", authController);
 
 
 
